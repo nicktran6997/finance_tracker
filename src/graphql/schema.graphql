@@ -1,0 +1,56 @@
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  transactions: [Transaction!]!
+}
+
+type Transaction {
+  id: ID!
+  amount: Float!
+  description: String
+  date: String!
+  user: User!
+}
+
+type TransactionResponse {
+  id: ID!
+  amount: Float!
+  description: String
+  date: String!
+  userId: ID!
+}
+
+type Query {
+  getUser(id: ID!): User,
+  me: User,
+  getTransactions(userId: ID!): [Transaction!]!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+input SignupInput {
+  email: String!
+  password: String!
+  name: String!
+  teamName: String
+}
+
+input TransactionInput {
+  amount: Float!
+  description: String
+  date: String!
+  userId: ID!
+  teamName: String
+  categoryId: ID
+}
+
+type Mutation {
+  createUser(name: String!, email: String!): User!
+  addTransaction(transactionInput: TransactionInput!): TransactionResponse!
+  login(email: String!, password: String!): AuthPayload!
+  signup(input: SignupInput!): AuthPayload!
+}

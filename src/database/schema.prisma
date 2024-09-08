@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  name         String
+  passwordHash String
+  teamId       String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+  team         Team?         @relation(fields: [teamId], references: [id])
+
+  @@index([teamId])
+}
+
+model Team {
+  id           String        @id @default(uuid())
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+  users        User[]
+}
+
+model Transaction {
+  id          String    @id @default(uuid())
+  amount      Decimal   @db.Decimal(10, 2)
+  description String
+  date        DateTime
+  categoryId  String?
+  userId      String
+  teamId      String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  category    Category? @relation(fields: [categoryId], references: [id])
+  team        Team?     @relation(fields: [teamId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@unique([teamId, date, amount, description])
+  @@index([userId])
+  @@index([teamId])
+  @@index([categoryId])
+}
+
+model Category {
+  id           String        @id @default(uuid())
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+}

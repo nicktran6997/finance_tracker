@@ -1,0 +1,9 @@
+mutation AddTransaction($transactionInput: TransactionInput!) {
+  addTransaction(transactionInput: $transactionInput) {
+    id
+    amount
+    description
+    date
+    userId
+  }
+}
