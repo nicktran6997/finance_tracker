@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import {
   createColumnHelper,
   flexRender,
@@ -19,38 +20,73 @@ export interface Transaction {
 
 const columnHelper = createColumnHelper();
 
-const columns = [
-  columnHelper.accessor('date', {
-    cell: info => new Date(info.getValue()).toLocaleDateString(),
-    header: () => 'Date',
-  }),
-  columnHelper.accessor('description', {
-    cell: info => info.getValue(),
-    header: () => 'Description',
-  }),
-  columnHelper.accessor('category', {
-    cell: info => (
-      <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-        {info.getValue()}
-      </span>
-    ),
-    header: () => 'Category',
-  }),
-  columnHelper.accessor('amount', {
-    cell: info => `$${(info.getValue() as number).toFixed(2)}`,
-    header: () => 'Amount',
-  }),
-];
+// Create an editable cell component
+const EditableCell = ({ getValue, row, column, table }: any) => {
+  const initialValue = getValue();
+  const [value, setValue] = useState(initialValue);
+
+  const isEditing = table.options.meta?.editingRow === row.id;
+
+  if (!isEditing) {
+    return flexRender(column.columnDef.cell, { getValue });
+  }
+
+  const onBlur = () => {
+    table.options.meta?.updateData(row.index, column.id, value);
+  };
+
+  return (
+    <input
+      value={value as string}
+      onChange={e => setValue(e.target.value)}
+      onBlur={onBlur}
+      className="w-full p-2 border rounded"
+    />
+  );
+};
 
 export const TransactionsTable = ({
   transactions,
-  setTransactions
 }: {
   transactions: Transaction[],
-  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>
 }) => {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [editingRow, setEditingRow] = useState<string | null>(null);
 
+  const columns = [
+    columnHelper.accessor('date', {
+      cell: info => new Date(info.getValue()).toLocaleDateString(),
+      header: () => 'Date',
+    }),
+    columnHelper.accessor('description', {
+      cell: info => info.getValue(),
+      header: () => 'Description',
+    }),
+    columnHelper.accessor('category', {
+      cell: info => (
+        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+          {info.getValue()}
+        </span>
+      ),
+      header: () => 'Category',
+    }),
+    columnHelper.accessor('amount', {
+      cell: info => `$${(info.getValue() as number).toFixed(2)}`,
+      header: () => 'Amount',
+    }),
+    columnHelper.accessor('action', {
+      cell: ({ row }) => (
+        <button
+          onClick={() => setEditingRow(editingRow === row.id ? null : row.id)}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          {editingRow === row.id ? 'Save' : 'Edit'}
+        </button>
+      ),
+      header: () => 'Actions',
+    })
+  ];
+    
   const table = useReactTable({
     data: transactions,
     columns: columns as ColumnDef<any, any>[],
@@ -60,22 +96,18 @@ export const TransactionsTable = ({
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    meta: {
-      updateData: (rowIndex: number, columnId: string, value: any) => {
-        setTransactions(old =>
-          old.map((row, index) => {
-            if (index === rowIndex) {
-              return {
-                ...old[rowIndex],
-                [columnId]: value,
-              }
-            }
-            return row;
-          })
-        )
-      },
-    },
+    meta: {},
   });
+
+  if (transactions.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-gray-500">No transactions found. Add some transactions to get started!</p>
+        {/* You could add a button here to guide users to add transactions */}
+      </div>
+    );
+  }
+
 
   return (
     <div className="overflow-x-auto">
