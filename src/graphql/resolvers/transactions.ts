@@ -19,7 +19,7 @@ export const transactionResolvers = {
       if (!user) {
         throw new Error('Not authenticated');
       }
-      console.log(user.id);
+      
       return prisma.transaction.findMany({
         where: { userId: user.id },
         orderBy: { date: 'desc' },
