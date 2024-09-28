@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useLoginMutation } from 'src/generated/graphql';
 import { useAuth } from 'src/hooks/useAuth';
+import TextInput from '../TextInput/TextInput';
 
 const LoginForm = ({ className = '' }) => {
   const [email, setEmail] = useState('');
@@ -29,33 +30,27 @@ const LoginForm = ({ className = '' }) => {
         <div className="bg-gray-100 rounded-lg p-6 shadow-sm">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
+              <TextInput
                 id="email"
                 name="email"
+                labelCopy="Email Address"
                 type="email"
                 autoComplete="email"
-                required
+                required={true}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
+              <TextInput
                 id="password"
                 name="password"
+                labelCopy="Password"
                 type="password"
                 autoComplete="current-password"
-                required
+                required={true}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
             <div>
