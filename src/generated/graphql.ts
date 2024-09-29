@@ -88,11 +88,8 @@ export type Transaction = {
 
 export type TransactionInput = {
   amount: Scalars['Float']['input'];
-  categoryId?: InputMaybe<Scalars['ID']['input']>;
   date: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
-  teamName?: InputMaybe<Scalars['String']['input']>;
-  userId: Scalars['ID']['input'];
 };
 
 export type TransactionResponse = {

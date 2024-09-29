@@ -1,11 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { useAuth } from 'src/hooks/useAuth';
 
 import { TransactionsTable } from 'src/app/components/TransactionsTable';
 import LoginForm from 'src/app/components/LoginForm/LoginForm';
-
+import BaseModal from 'src/app/components/BaseModal/BaseModal';
+import TransactionForm from 'src/app/components/TransactionForm/TransactionForm';
 
 const GET_TRANSACTIONS = gql`
   query GetTransactions {
@@ -20,6 +21,7 @@ const GET_TRANSACTIONS = gql`
 
 const Dashboard: React.FC = (props: any) => {
   let { loading, error, data } = useQuery(GET_TRANSACTIONS);
+  let [ isModalOpen, setIsModalOpen ] = useState(false)
   let content;
   if (loading) content = <p>Loading...</p>;
   if (error) {
@@ -48,7 +50,15 @@ const Dashboard: React.FC = (props: any) => {
         </div>
       { isLoggedIn ? (
         <div className="md:mt-0 mt-8">
-          Logged In!
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+          Open Signup Form
+          </button>
+          <BaseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <TransactionForm />
+          </BaseModal>
         </div>
         ) : <LoginForm className="md:mt-0 mt-8" /> 
       }

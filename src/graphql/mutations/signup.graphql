@@ -1,16 +1,14 @@
-/**
- * Mutation to sign up a new user.
- *
- * @param {SignupInput!} input - The input object containing the user's signup information.
- * @returns {
- *   token: String!
- *   user: {
- *     id: ID!
- *     name: String!
- *     email: String!
- *   }
- * } - The authentication token and the signed up user's information.
- */
+# Mutation to sign up a new user.
+#
+# Input:
+#   SignupInput! - The input object containing the user's signup information.
+# Returns:
+#   token: String! - The authentication token
+#   user: Object - The signed up user's information
+#     id: ID!
+#     name: String!
+#     email: String!
+
 mutation Signup($input: SignupInput!) {
   signup(input: $input) {
     token

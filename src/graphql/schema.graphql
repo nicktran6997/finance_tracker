@@ -42,10 +42,7 @@ input SignupInput {
 input TransactionInput {
   amount: Float!
   description: String
-  date: String!
-  userId: ID!
-  teamName: String
-  categoryId: ID
+  date: String! #TODO: make this a Date type later
 }
 
 type Mutation {
