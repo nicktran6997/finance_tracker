@@ -1,0 +1,8 @@
+query GetUser($id: ID!) {
+  getUser(id: $id) {
+    ...UserFields
+    transactions {
+      ...TransactionFields
+    }
+  }
+}

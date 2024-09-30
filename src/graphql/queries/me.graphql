@@ -1,0 +1,8 @@
+query Me {
+  me {
+    ...UserFields,
+    transactions {
+      ...TransactionFields
+    }
+  }
+}

@@ -9,7 +9,12 @@ export const userResolvers = {
       if (!user) {
         throw new Error('Not authenticated');
       }
-      return prisma.user.findUnique({ where: { id: user.id } });
-    },
+          return prisma.user.findUnique({
+            where: { id: user.id },
+            include: {
+              transactions: true
+            }
+          });
+        },
   },
 };
