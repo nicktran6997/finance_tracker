@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate": "graphql-codegen --config codegen.yml --verbose"
+    "generate": "graphql-codegen --config codegen.yml --verbose",
+    "generate-dummy-data": "ts-node src/database/scripts/generateDummyTransactions.ts",
+    "delete-dummy-data": "ts-node src/database/scripts/deleteDummyTransactions.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.11.5",
@@ -48,6 +50,7 @@
     "postcss": "^8",
     "prisma": "^5.19.0",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
