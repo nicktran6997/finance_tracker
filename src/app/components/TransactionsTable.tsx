@@ -11,7 +11,6 @@ import {
 } from '@tanstack/react-table';
 
 export interface Transaction {
-  userId: string;
   amount: number;
   description: string;
   category?: string;
@@ -47,6 +46,7 @@ const EditableCell = ({ getValue, row, column, table }: any) => {
 
 export const TransactionsTable = ({
   transactions,
+  readOnly = false
 }: {
   transactions: Transaction[],
 }) => {
@@ -55,26 +55,26 @@ export const TransactionsTable = ({
 
   const columns = [
     columnHelper.accessor('date', {
-      cell: info => new Date(info.getValue()).toLocaleDateString(),
+      cell: info => new Date(Number(info.getValue())).toLocaleDateString(),
       header: () => 'Date',
-    }),
-    columnHelper.accessor('description', {
-      cell: info => info.getValue(),
-      header: () => 'Description',
-    }),
-    columnHelper.accessor('category', {
-      cell: info => (
-        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-          {info.getValue()}
-        </span>
-      ),
-      header: () => 'Category',
     }),
     columnHelper.accessor('amount', {
       cell: info => `$${(info.getValue() as number).toFixed(2)}`,
       header: () => 'Amount',
     }),
-    columnHelper.accessor('action', {
+    columnHelper.accessor('category', {
+      cell: info => (
+        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+          { info.getValue() ? info.getValue() : 'N/A' }
+        </span>
+      ),
+      header: () => 'Category',
+    }),
+    columnHelper.accessor('description', {
+      cell: info => info.getValue(),
+      header: () => 'Description',
+    }),
+    ...(readOnly ? [columnHelper.accessor('action', {
       cell: ({ row }) => (
         <button
           onClick={() => setEditingRow(editingRow === row.id ? null : row.id)}
@@ -84,7 +84,7 @@ export const TransactionsTable = ({
         </button>
       ),
       header: () => 'Actions',
-    })
+    })] : [])
   ];
     
   const table = useReactTable({
@@ -110,7 +110,7 @@ export const TransactionsTable = ({
 
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto border-8 border-gray-200 rounded-lg">
       <table className="min-w-full divide-y divide-gray-300">
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
