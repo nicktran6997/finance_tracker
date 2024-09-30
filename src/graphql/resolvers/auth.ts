@@ -1,3 +1,9 @@
+/**
+ * Provides resolvers for the GraphQL authentication mutations.
+ * 
+ * The `signup` mutation creates a new user with the provided email, password, and name.
+ * The `login` mutation authenticates a user with the provided email and password, and returns a JWT token.
+ */
 // src/graphql/resolvers/auth.ts
 
 import { PrismaClient } from '@prisma/client';
@@ -40,11 +46,42 @@ export const authResolvers = {
 
       const valid = await bcrypt.compare(password, user.passwordHash);
       if (!valid) {
-        throw new Error('Invalid password');
+        throw new Error('Invalid Username or Password');
       }
 
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string);
       return { token, user };
     }
-  },
+    // /**
+    //  * Handles the "Forgot Password" functionality.
+    //  * 
+    //  * @param {any} _ - Unused parent argument
+    //  * @param {Object} args - The arguments passed to the resolver
+    //  * @param {string} args.email - The email address of the user requesting a password reset
+    //  * @returns {Object} An object containing a success message
+    //  * @throws {Error} If no user is found with the provided email
+    //  */
+    // forgotPassword: async (_: any, { email }: { email: string }) => {
+    //   const user = await prisma.user.findUnique({ where: { email } });
+    //   if (!user) {
+    //     throw new Error('No user found with this email');
+    //   }
+
+    //   // Generate a password reset token
+    //   const resetToken = jwt.sign({ userId: user.id }, JWT_SECRET as string, { expiresIn: '1h' });
+
+    //   // Update user with reset token and expiration
+    //   await prisma.user.update({
+    //     where: { id: user.id },
+    //     data: {
+    //       resetToken,
+    //       resetTokenExpiry: new Date(Date.now() + 3600000) // 1 hour from now
+    //     },
+    //   });
+
+    //   // TODO: Send email with reset token link
+
+    //   return { message: 'Password reset email sent' };
+    // }  
+    },
 };

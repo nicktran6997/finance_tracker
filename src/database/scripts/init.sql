@@ -1,3 +1,5 @@
+--Script is for testing purposes only, please use npx prisma db push / prisma migrate dev instead
+
 -- Create UUID extension if not already created
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 

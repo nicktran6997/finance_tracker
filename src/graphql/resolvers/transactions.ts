@@ -7,7 +7,6 @@ interface AddTransactionInput {
   amount: number;
   description: string;
   date: Date;
-  userId: string;
 }
 
 interface ResolverContext {
@@ -19,7 +18,7 @@ export const transactionResolvers = {
       if (!user) {
         throw new Error('Not authenticated');
       }
-      console.log(user.id);
+      
       return prisma.transaction.findMany({
         where: { userId: user.id },
         orderBy: { date: 'desc' },
@@ -28,16 +27,16 @@ export const transactionResolvers = {
   },
   Mutation: {
     addTransaction: async (_: unknown, input: { transactionInput: AddTransactionInput }, { user }: ResolverContext) => {
-      const { amount, description, date, userId } = input.transactionInput;
-      if (!userId) {
+      const { amount, description, date } = input.transactionInput;
+      if (!user) {
         throw new Error('Not authenticated');
       }
       return prisma.transaction.create({
         data: {
           amount,
           description,
-          date,
-          userId
+          date: new Date(date),
+          userId: user.id
         },
       });
     },
